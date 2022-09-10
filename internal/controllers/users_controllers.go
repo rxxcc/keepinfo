@@ -4,12 +4,12 @@ import (
 	"net/http"
 )
 
-func GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("List of users"))
-}
-
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Create new user"))
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Login"))
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {

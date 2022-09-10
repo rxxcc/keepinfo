@@ -1,58 +1,64 @@
 package routes
 
 import (
-	"github.com/0xmlx/contacts-app-backend/api/controllers"
+	"github.com/0xmlx/contacts-app-backend/internal/controllers"
 	"net/http"
 )
 
 var allRoutes = []Route{
+
+	// user routes
+
 	{
-		URI:     "/users",
-		Method:  http.MethodGet,
-		Handler: controllers.GetUsers,
-	},
-	{
-		URI:     "/user/create",
+		URI:     "/internal/auth/register",
 		Method:  http.MethodPost,
 		Handler: controllers.CreateUser,
 	},
 	{
-		URI:     "/user/{id}",
+		URI:     "/internal/auth/login",
+		Method:  http.MethodPost,
+		Handler: controllers.Login,
+	},
+	{
+		URI:     "/internal/auth/{id}",
 		Method:  http.MethodGet,
 		Handler: controllers.GetUser,
 	},
 	{
-		URI:     "/user/{id}",
+		URI:     "/internal/auth/{id}",
 		Method:  http.MethodPut,
 		Handler: controllers.UpdateUser,
 	},
 	{
-		URI:     "/user/{id}",
+		URI:     "/internal/auth/{id}",
 		Method:  http.MethodDelete,
 		Handler: controllers.DeleteUser,
 	},
+
+	// contacts routes
+
 	{
-		URI:     "/contacts",
+		URI:     "/internal/contact",
 		Method:  http.MethodGet,
 		Handler: controllers.GetContacts,
 	},
 	{
-		URI:     "/contact/create",
+		URI:     "/internal/contact/add",
 		Method:  http.MethodPost,
 		Handler: controllers.CreateContact,
 	},
 	{
-		URI:     "/contact/{id}",
+		URI:     "/internal/contact/{id}",
 		Method:  http.MethodGet,
 		Handler: controllers.GetContact,
 	},
 	{
-		URI:     "/contact/{id}",
+		URI:     "/internal/contact/{id}",
 		Method:  http.MethodPut,
 		Handler: controllers.UpdateContact,
 	},
 	{
-		URI:     "/contact/{id}",
+		URI:     "/internal/contact/{id}",
 		Method:  http.MethodDelete,
 		Handler: controllers.DeleteContact,
 	},
