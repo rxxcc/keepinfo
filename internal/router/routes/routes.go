@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/0xmlx/contacts-app-backend/internal/middlewares"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -18,7 +19,9 @@ func Load() []Route {
 
 func SetupRoutes(r *mux.Router) *mux.Router {
 	for _, route := range Load() {
-		r.HandleFunc(route.URI, route.Handler).Methods(route.Method)
+		r.Use(middlewares.AddContentType)
+		routes := r.PathPrefix("/api").Subrouter()
+		routes.HandleFunc(route.URI, route.Handler).Methods(route.Method)
 	}
 	return r
 }

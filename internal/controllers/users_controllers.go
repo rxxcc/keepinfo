@@ -4,12 +4,16 @@ import (
 	"net/http"
 )
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Create new user"))
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Login"))
+}
+
+func SignOut(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Logout"))
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {

@@ -1,7 +1,6 @@
--- +goose Up
--- +goose StatementBegin
 CREATE TABLE contacts (
   id SERIAL PRIMARY KEY,
+  user_id INTEGER,
   first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
@@ -12,9 +11,9 @@ CREATE TABLE contacts (
   updated_at timestamp NOT NULL,
   deleted_at timestamp
 );
--- +goose StatementEnd
 
--- +goose Down
--- +goose StatementBegin
-DROP TABLE contacts;
--- +goose StatementEnd
+ALTER TABLE contacts  
+    ADD CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
+            REFERENCES users(id)
+                ON DELETE CASCADE
