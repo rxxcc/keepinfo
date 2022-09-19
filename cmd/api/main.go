@@ -1,13 +1,12 @@
 package main
 
 import (
-	"github.com/0xmlx/contacts-app-backend/internal/server"
 	"log"
 )
 
 // runs the server
 func main() {
-	db, err := server.Run()
+	db, err := Run()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,6 +5,7 @@ import "time"
 // Contact struct
 type Contact struct {
 	ID        int       `json:"id"`
+	UserID    int       `json:"user_id"`
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
 	Email     string    `json:"email"`

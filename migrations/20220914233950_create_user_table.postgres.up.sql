@@ -9,3 +9,5 @@ CREATE TABLE users (
   updated_at timestamp NOT NULL,
   deleted_at timestamp
 );
+
+CREATE INDEX idx_email ON users(email)

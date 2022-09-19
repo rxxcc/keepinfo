@@ -1,12 +1,13 @@
-package server
+package main
 
 import (
 	"fmt"
-	"github.com/0xmlx/contacts-app-backend/internal/db"
-	"github.com/0xmlx/contacts-app-backend/internal/router"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/0xmlx/contacts-app-backend/internal/db"
+	"github.com/0xmlx/contacts-app-backend/internal/router"
 )
 
 var (
