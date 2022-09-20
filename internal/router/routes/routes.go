@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/0xmlx/contacts-app-backend/internal/middlewares"
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/0xmlx/keepinfo/internal/middlewares"
+	"github.com/gorilla/mux"
 )
 
 type Route struct {

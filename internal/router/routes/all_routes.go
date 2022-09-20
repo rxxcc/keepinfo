@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"github.com/0xmlx/contacts-app-backend/internal/controllers"
 	"net/http"
+
+	"github.com/0xmlx/keepinfo/internal/controllers"
 )
 
 var allRoutes = []Route{

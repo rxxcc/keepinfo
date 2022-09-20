@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/0xmlx/contacts-app-backend/internal/router/routes"
+	"github.com/0xmlx/keepinfo/internal/router/routes"
 	"github.com/gorilla/mux"
 )
 

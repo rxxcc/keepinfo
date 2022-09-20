@@ -5,24 +5,33 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/0xmlx/contacts-app-backend/internal/db"
-	"github.com/0xmlx/contacts-app-backend/internal/router"
+	"github.com/0xmlx/keepinfo/internal/db"
+	"github.com/0xmlx/keepinfo/internal/router"
+	"github.com/alexedwards/scs/v2"
 )
 
 var (
-	port       = os.Getenv("PORT")
-	host       = os.Getenv("HOST")
-	portNumber = os.Getenv("DBPORT")
-	user       = os.Getenv("USER")
-	password   = os.Getenv("PASSWORD")
-	dbName     = os.Getenv("DBNAME")
+	port           = os.Getenv("PORT")
+	host           = os.Getenv("HOST")
+	portNumber     = os.Getenv("DBPORT")
+	user           = os.Getenv("USER")
+	password       = os.Getenv("PASSWORD")
+	dbName         = os.Getenv("DBNAME")
+	sessionManager *scs.SessionManager
 )
 
 // Run starts a new server.
 func Run() (*db.DB, error) {
-	log.Println("starting a new server at port " + port + "...")
+	// This initializes a new session manager.
+	sessionManager = scs.New()
+	sessionManager.Lifetime = 24 * time.Hour
+	sessionManager.Cookie.Persist = true
+	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+	sessionManager.Cookie.Secure = false
 
+	// connecting your application to the database.
 	connInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, portNumber, user, password, dbName)
 	dbConn, err := db.ConnectSQL(connInfo)
 	if err != nil {
@@ -31,6 +40,8 @@ func Run() (*db.DB, error) {
 
 	log.Println("connected to the database...")
 
+	// starting up a server.
+	log.Println("starting a new server at port " + port + "...")
 	r := router.NEW()
 
 	if err := http.ListenAndServe(":"+port, r); err != nil {
