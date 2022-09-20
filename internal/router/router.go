@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/0xmlx/keepinfo/internal/router/routes"
 	"github.com/gorilla/mux"
+	"github.com/inuoshios/keepinfo/internal/router/routes"
 )
 
 func NEW() *mux.Router {

@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"github.com/0xmlx/keepinfo/internal/controllers"
+	"github.com/inuoshios/keepinfo/internal/controllers"
 )
 
 var allRoutes = []Route{

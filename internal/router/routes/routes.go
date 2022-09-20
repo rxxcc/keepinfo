@@ -3,8 +3,8 @@ package routes
 import (
 	"net/http"
 
-	"github.com/0xmlx/keepinfo/internal/middlewares"
 	"github.com/gorilla/mux"
+	"github.com/inuoshios/keepinfo/internal/middlewares"
 )
 
 type Route struct {

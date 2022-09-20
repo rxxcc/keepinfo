@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/0xmlx/keepinfo/internal/config"
+	"github.com/inuoshios/keepinfo/internal/config"
 )
 
 var sessionManager config.Config

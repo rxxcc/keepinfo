@@ -7,10 +7,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/0xmlx/keepinfo/internal/config"
-	"github.com/0xmlx/keepinfo/internal/db"
-	"github.com/0xmlx/keepinfo/internal/router"
 	"github.com/alexedwards/scs/v2"
+	"github.com/inuoshios/keepinfo/internal/config"
+	"github.com/inuoshios/keepinfo/internal/db"
+	"github.com/inuoshios/keepinfo/internal/router"
 )
 
 var (

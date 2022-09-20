@@ -1,4 +1,4 @@
-module github.com/0xmlx/keepinfo
+module github.com/inuoshios/keepinfo
 
 go 1.18
 
