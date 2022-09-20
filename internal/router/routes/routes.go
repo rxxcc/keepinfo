@@ -20,7 +20,10 @@ func Load() []Route {
 
 func SetupRoutes(r *mux.Router) *mux.Router {
 	for _, route := range Load() {
+		// Add middlewares
 		r.Use(middlewares.AddContentType)
+		r.Use(middlewares.LoadSession)
+
 		routes := r.PathPrefix("/api").Subrouter()
 		routes.HandleFunc(route.URI, route.Handler).Methods(route.Method)
 	}

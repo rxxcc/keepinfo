@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/0xmlx/keepinfo/internal/config"
 	"github.com/0xmlx/keepinfo/internal/db"
 	"github.com/0xmlx/keepinfo/internal/router"
 	"github.com/alexedwards/scs/v2"
@@ -19,6 +20,7 @@ var (
 	user           = os.Getenv("USER")
 	password       = os.Getenv("PASSWORD")
 	dbName         = os.Getenv("DBNAME")
+	app            config.Config
 	sessionManager *scs.SessionManager
 )
 
@@ -30,6 +32,8 @@ func Run() (*db.DB, error) {
 	sessionManager.Cookie.Persist = true
 	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
 	sessionManager.Cookie.Secure = false
+
+	app.Session = sessionManager
 
 	// connecting your application to the database.
 	connInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, portNumber, user, password, dbName)
