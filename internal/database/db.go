@@ -1,10 +1,11 @@
-package db
+package database
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
 	"log"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 // DB is the Database connection pool

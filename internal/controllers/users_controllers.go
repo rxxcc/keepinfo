@@ -1,11 +1,18 @@
 package controllers
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
+
+	"github.com/inuoshios/keepinfo/internal/models"
 )
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Create new user"))
+	var user models.User
+
+	json.NewDecoder(r.Body).Decode(&user)
+	log.Println(user)
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {

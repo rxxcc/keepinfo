@@ -9,7 +9,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/inuoshios/keepinfo/internal/config"
-	"github.com/inuoshios/keepinfo/internal/db"
+	"github.com/inuoshios/keepinfo/internal/database"
 	"github.com/inuoshios/keepinfo/internal/router"
 )
 
@@ -37,7 +37,7 @@ func Run() (*db.DB, error) {
 
 	// connecting your application to the database.
 	connInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, portNumber, user, password, dbName)
-	dbConn, err := db.ConnectSQL(connInfo)
+	dbConn, err := database.ConnectSQL(connInfo)
 	if err != nil {
 		log.Fatal("cannot connect to the database...")
 	}
