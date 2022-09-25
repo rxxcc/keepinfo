@@ -2,11 +2,7 @@ package middlewares
 
 import (
 	"net/http"
-
-	"github.com/inuoshios/keepinfo/internal/config"
 )
-
-var sessionManager config.Config
 
 // AddContentType functions helps set headers for our api.
 func AddContentType(next http.Handler) http.Handler {
@@ -16,9 +12,4 @@ func AddContentType(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Max-Age", "86400")
 		next.ServeHTTP(w, r)
 	})
-}
-
-// LoadSession automatically load and saves the session data for the current request.
-func LoadSession(next http.Handler) http.Handler {
-	return sessionManager.Session.LoadAndSave(next)
 }

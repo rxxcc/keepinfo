@@ -1,12 +1,15 @@
 package config
 
 import (
-	"github.com/alexedwards/scs/v2"
+	"log"
+
 	"github.com/inuoshios/keepinfo/internal/database"
 )
 
 // Config consists of all the application config
 type Config struct {
-	SQL     *database.DB
-	Session *scs.SessionManager
+	SQL       *database.DB
+	InfoLog   *log.Logger
+	ErrorLog  *log.Logger
+	SecretKey string
 }

@@ -5,47 +5,39 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/alexedwards/scs/v2"
 	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
 	"github.com/inuoshios/keepinfo/internal/router"
 )
 
 var (
-	port           = os.Getenv("PORT")
-	host           = os.Getenv("HOST")
-	portNumber     = os.Getenv("DBPORT")
-	user           = os.Getenv("USER")
-	password       = os.Getenv("PASSWORD")
-	dbName         = os.Getenv("DBNAME")
-	app            config.Config
-	sessionManager *scs.SessionManager
+	port       = os.Getenv("PORT")
+	host       = os.Getenv("HOST")
+	portNumber = os.Getenv("DBPORT")
+	user       = os.Getenv("USER")
+	password   = os.Getenv("PASSWORD")
+	dbName     = os.Getenv("DBNAME")
+	app        config.Config
 )
 
 // Run starts a new server.
-func Run() (*db.DB, error) {
-	// This initializes a new session manager.
-	sessionManager = scs.New()
-	sessionManager.Lifetime = 24 * time.Hour
-	sessionManager.Cookie.Persist = true
-	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
-	sessionManager.Cookie.Secure = false
-
-	app.Session = sessionManager
+func Run() (*database.DB, error) {
+	// adding custom logs
+	app.InfoLog = log.New(os.Stdout, "STATUS:\t", log.Ldate|log.Ltime)
+	app.ErrorLog = log.New(os.Stdout, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// connecting your application to the database.
 	connInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, portNumber, user, password, dbName)
 	dbConn, err := database.ConnectSQL(connInfo)
 	if err != nil {
-		log.Fatal("cannot connect to the database...")
+		app.InfoLog.Fatal(err)
 	}
 
-	log.Println("connected to the database...")
+	app.InfoLog.Println("connected to the database successfully...")
 
 	// starting up a server.
-	log.Println("starting a new server at port " + port + "...")
+	app.InfoLog.Println("starting a new server at port " + port + "...")
 	r := router.NEW()
 
 	if err := http.ListenAndServe(":"+port, r); err != nil {

@@ -1,6 +1,8 @@
 package controllers
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func GetContacts(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("List of contacts"))
