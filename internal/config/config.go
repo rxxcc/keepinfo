@@ -8,8 +8,7 @@ import (
 
 // Config consists of all the application config
 type Config struct {
-	SQL       *database.DB
-	InfoLog   *log.Logger
-	ErrorLog  *log.Logger
-	SecretKey string
+	SQL      *database.DB
+	InfoLog  *log.Logger
+	ErrorLog *log.Logger
 }
