@@ -84,7 +84,6 @@ CREATE TABLE public.users (
     last_name character varying(100) NOT NULL,
     email character varying(60) NOT NULL,
     password character varying(50) NOT NULL,
-    access_level integer DEFAULT 1 NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone
@@ -151,6 +150,13 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_email; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_email ON public.users USING btree (email);
 
 
 --

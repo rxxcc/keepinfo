@@ -1,20 +1,28 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/inuoshios/keepinfo/internal/config"
+	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/inuoshios/keepinfo/internal/responses"
 )
 
-var Repo *Repository
+var (
+	user models.User
+	Repo *Repository
+)
 
 type Repository struct {
 	App *config.Config
 }
 
 func (repo *Repository) Signup(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "signup")
+	json.NewDecoder(r.Body).Decode(&user)
+
+	responses.JSON(w, 200, user)
 }
 
 func (repo *Repository) Signin(w http.ResponseWriter, r *http.Request) {

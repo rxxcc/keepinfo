@@ -1,14 +1,13 @@
 package config
 
 import (
+	"database/sql"
 	"log"
-
-	"github.com/inuoshios/keepinfo/internal/database"
 )
 
 // Config consists of all the application config
 type Config struct {
-	SQL      *database.DB
+	SQL      *sql.DB
 	InfoLog  *log.Logger
 	ErrorLog *log.Logger
 }
