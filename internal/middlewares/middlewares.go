@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/inuoshios/keepinfo/internal/responses"
+	"github.com/inuoshios/keepinfo/internal/response"
 )
 
 // AddContentType functions helps set headers for our api.
@@ -21,7 +21,7 @@ func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header["Token"] == nil {
 			var err error
-			responses.Error(w, http.StatusUnauthorized, err)
+			response.Error(w, http.StatusUnauthorized, err)
 		}
 	})
 }
