@@ -8,7 +8,7 @@ import (
 	"github.com/inuoshios/keepinfo/internal/middlewares"
 )
 
-var Repo *handlers.Handlers
+var Repo *handlers.Handler
 
 func NEW() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
@@ -18,8 +18,8 @@ func NEW() *mux.Router {
 	routes := r.PathPrefix("/api").Subrouter()
 
 	routes.HandleFunc("/auth/signup", Repo.Signup).Methods(http.MethodPost)
-	routes.HandleFunc("/auth/signin", Repo.Signin).Methods(http.MethodPost)
-	routes.HandleFunc("/auth/signout", Repo.Signout).Methods(http.MethodPost)
+	routes.HandleFunc("/auth/login", Repo.Login).Methods(http.MethodPost)
+	routes.HandleFunc("/auth/logout", Repo.Logout).Methods(http.MethodPost)
 	routes.HandleFunc("/auth/users", Repo.GetUsers).Methods(http.MethodGet)
 	routes.HandleFunc("/auth/{id}", Repo.GetUser).Methods(http.MethodGet)
 	routes.HandleFunc("/auth/{id}", Repo.DeleteUser).Methods(http.MethodDelete)

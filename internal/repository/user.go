@@ -1,4 +1,4 @@
-package data
+package repository
 
 import (
 	"context"
@@ -8,15 +8,21 @@ import (
 	"github.com/inuoshios/keepinfo/internal/models"
 )
 
-type Database struct {
-	DB *sql.DB
+type appRepo struct {
+	db *sql.DB
 }
 
-func (m *Database) InsertUser(user models.User) error {
+func NewDatabase(db *sql.DB) Repository {
+	return &appRepo{
+		db,
+	}
+}
+
+func (a *appRepo) InsertUser(user models.User) (*models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	var id int
+	var id = 0
 
 	query := `
 		INSERT INTO users (first_name, last_name, email, password, )
@@ -27,22 +33,22 @@ func (m *Database) InsertUser(user models.User) error {
 		user.FirstName, user.LastName, user.Email, user.Password, time.Now(), time.Now(), time.Now(),
 	}
 
-	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&id)
+	err := a.db.QueryRowContext(ctx, query, args).Scan(&id)
 	if err != nil {
-		return err
+		return &user, err
 	}
 
-	return nil
+	return &user, err
 }
 
-func (m *Database) GetUserByID(id int) (models.User, error) {
+func (a *appRepo) GetUserByID(id int) (*models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	query := `select id, first_name, last_name, email, password, created_at, updated_at, deleted_at
 			from users where id = $1`
 
-	row := m.DB.QueryRowContext(ctx, query, id)
+	row := a.db.QueryRowContext(ctx, query, id)
 
 	var data models.User
 	err := row.Scan(
@@ -56,8 +62,8 @@ func (m *Database) GetUserByID(id int) (models.User, error) {
 	)
 
 	if err != nil {
-		return data, err
+		return &data, err
 	}
 
-	return data, nil
+	return &data, nil
 }
