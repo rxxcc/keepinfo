@@ -2,3 +2,5 @@
 app.env
 .dccache
 database.yml
+launch.json
+__debug_bin.exe

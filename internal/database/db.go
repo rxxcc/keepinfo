@@ -8,12 +8,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// DB is the Database connection pool
 type DB struct {
-	SQL *sql.DB
+	*sql.DB
 }
-
-var dbConn = &DB{}
 
 const (
 	maxOpenedConn = 10
@@ -34,13 +31,11 @@ func ConnectSQL(dsn string) (*DB, error) {
 	db.SetConnMaxIdleTime(maxIdleTime)
 	db.SetConnMaxLifetime(maxLifetime)
 
-	dbConn.SQL = db
-
 	if err = testDB(db); err != nil {
 		return nil, err
 	}
 
-	return dbConn, nil
+	return &DB{db}, nil
 }
 
 // testDB helps pings the Database
@@ -56,10 +51,6 @@ func testDB(db *sql.DB) error {
 func NewDatabase(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return nil, err
-	}
-
-	if err = db.Ping(); err != nil {
 		return nil, err
 	}
 

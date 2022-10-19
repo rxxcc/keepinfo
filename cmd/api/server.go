@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -12,18 +11,13 @@ import (
 	"github.com/inuoshios/keepinfo/internal/router"
 )
 
-var app config.Config
+var app = &config.Config{}
 
 // Run starts a new server.
 func Run() (*database.DB, error) {
 	// adding custom logs
 	app.InfoLog = log.New(os.Stdout, "STATUS:\t", log.Ldate|log.Ltime)
 	app.ErrorLog = log.New(os.Stdout, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	// load env files.
-	if err := godotenv.Load("app.env"); err != nil {
-		app.ErrorLog.Fatalf("error loading .env file: ", err)
-	}
 
 	port := os.Getenv("PORT")
 	host := os.Getenv("HOST")
@@ -36,7 +30,7 @@ func Run() (*database.DB, error) {
 	connInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, portNumber, user, password, dbName)
 	dbConn, err := database.ConnectSQL(connInfo)
 	if err != nil {
-		app.InfoLog.Fatal(err)
+		app.InfoLog.Fatalf("error connecting to the database %s", err)
 	}
 
 	app.InfoLog.Println("connected to the database successfully...")

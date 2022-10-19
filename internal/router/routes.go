@@ -3,31 +3,23 @@ package router
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"github.com/inuoshios/keepinfo/internal/handlers"
-	"github.com/inuoshios/keepinfo/internal/middlewares"
+	"github.com/inuoshios/keepinfo/internal/middleware"
 )
 
-var Repo *handlers.Handler
+var routes *handlers.Handler
 
-func NEW() *mux.Router {
-	r := mux.NewRouter().StrictSlash(true)
+func NEW() http.Handler {
+	mux := chi.NewRouter()
 
-	r.Use(middlewares.AddContentType)
+	// path prefix using chi
+	mux.Route("/api", func(mux chi.Router) {
+		// adding the `ContentType` middleware
+		mux.Use(middleware.AddContentType)
+		// adding the routes
+		mux.Post("/auth/signup", routes.Signup)
+	})
 
-	routes := r.PathPrefix("/api").Subrouter()
-
-	routes.HandleFunc("/auth/signup", Repo.Signup).Methods(http.MethodPost)
-	routes.HandleFunc("/auth/login", Repo.Login).Methods(http.MethodPost)
-	routes.HandleFunc("/auth/logout", Repo.Logout).Methods(http.MethodPost)
-	routes.HandleFunc("/auth/users", Repo.GetUsers).Methods(http.MethodGet)
-	routes.HandleFunc("/auth/{id}", Repo.GetUser).Methods(http.MethodGet)
-	routes.HandleFunc("/auth/{id}", Repo.DeleteUser).Methods(http.MethodDelete)
-	routes.HandleFunc("/contact", Repo.GetContacts).Methods(http.MethodGet)
-	routes.HandleFunc("/contact/add", Repo.CreateContact).Methods(http.MethodPost)
-	routes.HandleFunc("/contact/{id}", Repo.CreateContact).Methods(http.MethodGet)
-	routes.HandleFunc("/contact/{id}", Repo.UpdateContact).Methods(http.MethodPost)
-	routes.HandleFunc("/contact/{id}", Repo.DeleteContact).Methods(http.MethodDelete)
-
-	return r
+	return mux
 }

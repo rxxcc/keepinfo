@@ -10,6 +10,6 @@ func JSON(w http.ResponseWriter, statusCode int, data any) {
 	w.WriteHeader(statusCode)
 
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		fmt.Fprintf(w, "%s", err.Error())
+		_, _ = fmt.Fprintf(w, "%s", err.Error())
 	}
 }
