@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -52,8 +51,7 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 	user.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-	result, err := h.DB.InsertUser(user)
-	fmt.Println(result)
+	result, err := h.DB.InsertUser(&user)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, err)
 		return

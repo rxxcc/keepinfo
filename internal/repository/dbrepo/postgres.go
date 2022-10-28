@@ -9,7 +9,7 @@ import (
 )
 
 // InsertUser inserts a user into the database
-func (u *postgresDBRepo) InsertUser(user models.User) (int, error) {
+func (u *postgresDBRepo) InsertUser(user *models.User) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()
