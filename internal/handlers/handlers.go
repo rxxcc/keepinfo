@@ -2,22 +2,39 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
 	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/inuoshios/keepinfo/internal/repository"
+	"github.com/inuoshios/keepinfo/internal/repository/dbrepo"
 	"github.com/inuoshios/keepinfo/internal/response"
 	v "github.com/inuoshios/keepinfo/internal/validator"
 )
 
-type Handler struct {
-	*database.DB
+var Repo *Repository
+
+type Repository struct {
+	App *config.Config
+	DB  repository.DatabaseRepo
 }
 
-func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var user models.User
+func NewRepository(a *config.Config, db *database.DB) *Repository {
+	return &Repository{
+		App: a,
+		DB:  dbrepo.NewPostgresRepo(a, db.SQL),
+	}
+}
+
+func NewHandlers(h *Repository) {
+	Repo = h
+}
+
+func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
+	var user = models.User{}
 
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -32,10 +49,11 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.Password = hashedPassword
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+	user.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-	result, err := h.InsertUser(user)
+	result, err := h.DB.InsertUser(user)
+	fmt.Println(result)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, err)
 		return

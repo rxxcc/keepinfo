@@ -2,14 +2,13 @@ package database
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	_ "github.com/lib/pq"
 )
 
 type DB struct {
-	*sql.DB
+	SQL *sql.DB
 }
 
 const (
@@ -21,9 +20,9 @@ const (
 
 // ConnectSQL created Database pool for PG
 func ConnectSQL(dsn string) (*DB, error) {
-	db, err := NewDatabase(dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	db.SetMaxOpenConns(maxOpenedConn)
@@ -35,7 +34,9 @@ func ConnectSQL(dsn string) (*DB, error) {
 		return nil, err
 	}
 
-	return &DB{db}, nil
+	return &DB{
+		db,
+	}, nil
 }
 
 // testDB helps pings the Database
@@ -45,14 +46,4 @@ func testDB(db *sql.DB) error {
 	}
 
 	return nil
-}
-
-// NewDatabase create a new database for the project
-func NewDatabase(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }

@@ -2,5 +2,5 @@
 app.env
 .dccache
 database.yml
-launch.json
+.vscode
 __debug_bin.exe

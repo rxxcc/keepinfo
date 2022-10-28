@@ -18,7 +18,7 @@ func main() {
 	}
 
 	defer func(db *database.DB) {
-		db.Close()
+		db.SQL.Close()
 	}(db)
 
 }

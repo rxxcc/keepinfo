@@ -8,10 +8,11 @@ import (
 
 	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
+	"github.com/inuoshios/keepinfo/internal/handlers"
 	"github.com/inuoshios/keepinfo/internal/router"
 )
 
-var app = &config.Config{}
+var app config.Config
 
 // Run starts a new server.
 func Run() (*database.DB, error) {
@@ -40,8 +41,12 @@ func Run() (*database.DB, error) {
 	r := router.NEW()
 
 	if err := http.ListenAndServe(":"+port, r); err != nil {
+		app.ErrorLog.Fatalf("server error %v", err)
 		return nil, err
 	}
+
+	repo := handlers.NewRepository(&app, dbConn)
+	handlers.NewHandlers(repo)
 
 	return dbConn, nil
 }
