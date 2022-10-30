@@ -12,6 +12,7 @@ type postgresDBRepo struct {
 	DB  *sql.DB
 }
 
+// NewPostgresRepo initializes the DatabaseRepo
 func NewPostgresRepo(a *config.Config, conn *sql.DB) repository.DatabaseRepo {
 	return &postgresDBRepo{
 		App: a,

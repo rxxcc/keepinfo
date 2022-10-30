@@ -36,6 +36,9 @@ func Run() (*database.DB, error) {
 
 	app.InfoLog.Println("connected to the database successfully...")
 
+	repo := handlers.NewRepository(&app, dbConn)
+	handlers.NewHandlers(repo)
+
 	// starting up a server.
 	app.InfoLog.Println("starting a new server at port " + port + "...")
 	r := router.NEW()
@@ -44,9 +47,6 @@ func Run() (*database.DB, error) {
 		app.ErrorLog.Fatalf("server error %v", err)
 		return nil, err
 	}
-
-	repo := handlers.NewRepository(&app, dbConn)
-	handlers.NewHandlers(repo)
 
 	return dbConn, nil
 }
