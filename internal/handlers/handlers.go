@@ -21,6 +21,7 @@ type Repository struct {
 	DB  repository.DatabaseRepo
 }
 
+// NewRepository initializes the Repository struct
 func NewRepository(a *config.Config, db *database.DB) *Repository {
 	return &Repository{
 		App: a,
@@ -32,6 +33,7 @@ func NewHandlers(h *Repository) {
 	Repo = h
 }
 
+// Signup - Insert user into the database
 func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
 

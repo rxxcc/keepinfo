@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "",
+            "type": "go",
+            "request": "",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/api",
+            "env": {"PORT": "", "HOST": "", "DBPORT": "", "USER": "", "PASSWORD": "", "DBNAME": ""},
+            "envFile": "${workspaceFolder}/app.env",
+            "args": []
+        }
+    ]
+}

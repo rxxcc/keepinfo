@@ -83,7 +83,7 @@ CREATE TABLE public.users (
     first_name character varying(100) NOT NULL,
     last_name character varying(100) NOT NULL,
     email character varying(60) NOT NULL,
-    password character varying(50) NOT NULL,
+    password character varying(60) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone
