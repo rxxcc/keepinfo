@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/inuoshios/keepinfo/internal/auth"
 	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
 	"github.com/inuoshios/keepinfo/internal/models"
 	"github.com/inuoshios/keepinfo/internal/repository"
 	"github.com/inuoshios/keepinfo/internal/repository/dbrepo"
 	"github.com/inuoshios/keepinfo/internal/response"
-	v "github.com/inuoshios/keepinfo/internal/validator"
 )
 
 var Repo *Repository
@@ -43,7 +43,24 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashedPassword, err := v.Hash(user.Password)
+	if user.Email == "" {
+		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "email is required!"})
+		return
+	}
+	if user.FirstName == "" {
+		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "firstname is required!"})
+		return
+	}
+	if user.LastName == "" {
+		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "lastname is required!"})
+		return
+	}
+	if user.Password == "" {
+		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "password is required!"})
+		return
+	}
+
+	hashedPassword, err := auth.Hash(user.Password)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, err)
 		return

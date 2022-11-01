@@ -2,6 +2,8 @@ package dbrepo
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -38,3 +40,26 @@ func (u *postgresDBRepo) InsertUser(user *models.User) (int, error) {
 
 	return newID, nil
 }
+
+func (u *postgresDBRepo) GetUserbyEmail(email string) (*models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	var user models.User
+
+	query := `
+	SELECT * FROM users WHERE email = $1`
+
+	err := u.DB.QueryRowContext(ctx, query, email).Scan(&user)
+	if errors.Is(err, sql.ErrNoRows) {
+		return &user, fmt.Errorf("error: %w", err)
+	}
+
+	return &user, nil
+}
+
+// func (u *postgresDBRepo) LoginUser(username, password string) error {
+
+// }
