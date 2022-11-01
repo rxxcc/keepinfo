@@ -16,6 +16,20 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -25,8 +39,8 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.contacts (
-    id integer NOT NULL,
-    user_id integer,
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid,
     first_name character varying(255) NOT NULL,
     last_name character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
@@ -40,28 +54,6 @@ CREATE TABLE public.contacts (
 
 
 ALTER TABLE public.contacts OWNER TO postgres;
-
---
--- Name: contacts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.contacts_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.contacts_id_seq OWNER TO postgres;
-
---
--- Name: contacts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.contacts_id_seq OWNED BY public.contacts.id;
-
 
 --
 -- Name: schema_migration; Type: TABLE; Schema: public; Owner: postgres
@@ -79,7 +71,7 @@ ALTER TABLE public.schema_migration OWNER TO postgres;
 --
 
 CREATE TABLE public.users (
-    id integer NOT NULL,
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     first_name character varying(100) NOT NULL,
     last_name character varying(100) NOT NULL,
     email character varying(60) NOT NULL,
@@ -91,42 +83,6 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO postgres;
-
---
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.users_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.users_id_seq OWNER TO postgres;
-
---
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
-
-
---
--- Name: contacts id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.contacts ALTER COLUMN id SET DEFAULT nextval('public.contacts_id_seq'::regclass);
-
-
---
--- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
-
 
 --
 -- Name: contacts contacts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres

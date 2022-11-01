@@ -11,13 +11,13 @@ import (
 )
 
 // InsertUser inserts a user into the database
-func (u *postgresDBRepo) InsertUser(user *models.User) (int, error) {
+func (u *postgresDBRepo) InsertUser(user *models.User) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()
 	}()
 
-	var newID int
+	var newID []byte
 
 	query := `
 		INSERT INTO users (first_name, last_name, email, password, created_at, updated_at, deleted_at)
@@ -35,10 +35,10 @@ func (u *postgresDBRepo) InsertUser(user *models.User) (int, error) {
 	).Scan(&newID)
 
 	if err != nil {
-		return 0, fmt.Errorf("error inserting into table %w", err)
+		return "", fmt.Errorf("error inserting into table %w", err)
 	}
 
-	return newID, nil
+	return string(newID), nil
 }
 
 func (u *postgresDBRepo) GetUserbyEmail(email string) (*models.User, error) {

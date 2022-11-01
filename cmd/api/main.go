@@ -5,13 +5,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// runs the server
-func main() {
+func init() {
 	// load env files.
 	if err := godotenv.Load("app.env"); err != nil {
 		app.ErrorLog.Fatalf("error loading .env file: %s", err)
 	}
+}
 
+// runs the server
+func main() {
 	db, err := Run()
 	if err != nil {
 		app.ErrorLog.Fatal(err)

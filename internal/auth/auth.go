@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -20,7 +20,7 @@ func GenerateToken(user models.User) (string, error) {
 
 	signedStr, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
-		log.Println(err)
+		return "", fmt.Errorf("error creating as= signed string: %w", err)
 	}
 
 	return signedStr, nil
