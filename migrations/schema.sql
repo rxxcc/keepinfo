@@ -67,6 +67,25 @@ CREATE TABLE public.schema_migration (
 ALTER TABLE public.schema_migration OWNER TO postgres;
 
 --
+-- Name: sessions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.sessions (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid,
+    email character varying(60) NOT NULL,
+    refresh_token character varying NOT NULL,
+    user_agent character varying NOT NULL,
+    client_ip character varying NOT NULL,
+    is_blocked boolean DEFAULT false NOT NULL,
+    expired_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.sessions OWNER TO postgres;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -90,6 +109,22 @@ ALTER TABLE public.users OWNER TO postgres;
 
 ALTER TABLE ONLY public.contacts
     ADD CONSTRAINT contacts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions sessions_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_email_key UNIQUE (email);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -127,6 +162,14 @@ CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USIN
 --
 
 ALTER TABLE ONLY public.contacts
+    ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: sessions fk_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 

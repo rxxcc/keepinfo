@@ -55,10 +55,10 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "lastname is required!"})
 		return
 	}
-	// if user.Password == "" {
-	// 	response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "password is required!"})
-	// 	return
-	// }
+	if len(user.Password) < 8 {
+		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "password is too short!"})
+		return
+	}
 
 	hashedPassword, err := auth.Hash(user.Password)
 	if err != nil {
@@ -77,6 +77,6 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, 200, map[string]string{
-		"uuid": result,
+		"id": result,
 	})
 }

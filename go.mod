@@ -12,4 +12,4 @@ require github.com/go-chi/chi/v5 v5.0.7
 
 require github.com/golang-jwt/jwt/v4 v4.4.2
 
-require github.com/google/uuid v1.3.0 // indirect
+require github.com/google/uuid v1.3.0

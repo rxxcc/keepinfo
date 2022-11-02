@@ -3,6 +3,13 @@ package repository
 import "github.com/inuoshios/keepinfo/internal/models"
 
 type DatabaseRepo interface {
+	// user
 	InsertUser(user *models.User) (string, error)
 	GetUserbyEmail(email string) (*models.User, error)
+
+	// contact
+	InsertContact(contact *models.Contact) (string, error)
+
+	// session
+	CreateSession(session *models.Session) (string, error)
 }

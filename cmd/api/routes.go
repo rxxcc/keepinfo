@@ -15,8 +15,12 @@ func NEW() http.Handler {
 	mux.Use(AddContentType)
 
 	// Paths
+	mux.Route("/auth", func(r chi.Router) {
+		r.Post("/signup", handlers.Repo.Signup)
+	})
+
 	mux.Route("/api", func(r chi.Router) {
-		r.Post("/auth/signup", handlers.Repo.Signup)
+		r.Post("/contacts", handlers.Repo.CreateContact)
 	})
 
 	return mux
