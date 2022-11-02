@@ -17,6 +17,7 @@ func NEW() http.Handler {
 	// Paths
 	mux.Route("/auth", func(r chi.Router) {
 		r.Post("/signup", handlers.Repo.Signup)
+		r.Post("/signin", handlers.Repo.Login)
 	})
 
 	mux.Route("/api", func(r chi.Router) {

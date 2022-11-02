@@ -41,12 +41,12 @@ SET default_table_access_method = heap;
 CREATE TABLE public.contacts (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     user_id uuid,
-    first_name character varying(255) NOT NULL,
-    last_name character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    phone character varying(50) NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    email character varying NOT NULL,
+    phone character varying NOT NULL,
     label text[] NOT NULL,
-    address character varying(500) NOT NULL,
+    address character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone
@@ -73,7 +73,7 @@ ALTER TABLE public.schema_migration OWNER TO postgres;
 CREATE TABLE public.sessions (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     user_id uuid,
-    email character varying(60) NOT NULL,
+    email character varying NOT NULL,
     refresh_token character varying NOT NULL,
     user_agent character varying NOT NULL,
     client_ip character varying NOT NULL,
@@ -91,10 +91,10 @@ ALTER TABLE public.sessions OWNER TO postgres;
 
 CREATE TABLE public.users (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    first_name character varying(100) NOT NULL,
-    last_name character varying(100) NOT NULL,
-    email character varying(60) NOT NULL,
-    password character varying(60) NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    email character varying NOT NULL,
+    password character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone

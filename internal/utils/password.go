@@ -1,4 +1,4 @@
-package auth
+package utils
 
 import (
 	"errors"
@@ -15,16 +15,16 @@ func Hash(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
-func ComparePassword(hashedPassword, password string) (bool, error) {
+func ComparePassword(hashedPassword, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
 		switch {
 		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword):
-			return false, nil
+			return nil
 		default:
-			return false, err
+			return err
 		}
 	}
 
-	return true, nil
+	return nil
 }

@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/inuoshios/keepinfo/internal/repository"
 	"github.com/inuoshios/keepinfo/internal/repository/dbrepo"
 	"github.com/inuoshios/keepinfo/internal/response"
+	"github.com/inuoshios/keepinfo/internal/utils"
 )
 
 var Repo *Repository
@@ -60,7 +63,7 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashedPassword, err := auth.Hash(user.Password)
+	hashedPassword, err := utils.Hash(user.Password)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, err)
 		return
@@ -78,5 +81,46 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, 200, map[string]string{
 		"id": result,
+	})
+}
+
+func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if user.Email == "" || user.Password == "" {
+		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "some fields are missing"})
+		return
+	}
+
+	result, err := h.DB.GetUser(user.Email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			response.Error(w, http.StatusNotFound, utils.ErrSqlNoRows)
+			return
+		}
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := utils.ComparePassword(result.Password, user.Password); err != nil {
+		response.Error(w, http.StatusUnauthorized, fmt.Errorf("-> %w", err))
+		return
+	}
+
+	token, err := auth.GenerateToken(result)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
+		return
+	}
+
+	response.JSON(w, 200, models.JWT{
+		Token: token,
+		User:  result,
 	})
 }
