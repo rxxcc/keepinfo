@@ -9,6 +9,7 @@ type DatabaseRepo interface {
 
 	// contact
 	InsertContact(contact *models.Contact) (string, error)
+	GetContacts() ([]models.Contact, error)
 
 	// session
 	CreateSession(session *models.Session) (string, error)

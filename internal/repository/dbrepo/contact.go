@@ -41,3 +41,51 @@ func (u *postgresDBRepo) InsertContact(contact *models.Contact) (string, error) 
 	return string(newId), nil
 
 }
+
+func (u *postgresDBRepo) GetContacts() ([]models.Contact, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	var contact []models.Contact
+
+	query := `
+	SELECT id, user_id, first_name, last_name, email, phone, label, address, created_at, updated_at
+	FROM contacts ORDER BY created_at`
+
+	rows, err := u.DB.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		rows.Close()
+	}()
+
+	for rows.Next() {
+		var c models.Contact
+		err := rows.Scan(
+			&c.ID,
+			&c.UserID,
+			&c.FirstName,
+			&c.LastName,
+			&c.Email,
+			&c.Phone,
+			&c.Label,
+			&c.Address,
+			&c.CreatedAt,
+			&c.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		contact = append(contact, c)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return contact, nil
+}

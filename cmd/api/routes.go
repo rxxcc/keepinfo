@@ -22,6 +22,7 @@ func NEW() http.Handler {
 
 	mux.Route("/api", func(r chi.Router) {
 		r.Post("/contacts", handlers.Repo.CreateContact)
+		r.Get("/contacts", handlers.Repo.GetContacts)
 	})
 
 	return mux

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -30,4 +31,14 @@ func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, 200, map[string]string{
 		"id": result,
 	})
+}
+
+func (h *Repository) GetContacts(w http.ResponseWriter, r *http.Request) {
+	result, err := h.DB.GetContacts()
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, fmt.Errorf("error getting contacs: %w", err))
+		return
+	}
+
+	response.JSON(w, 200, result)
 }

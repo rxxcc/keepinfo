@@ -27,8 +27,8 @@ func (u *postgresDBRepo) InsertUser(user *models.User) (string, error) {
 		user.LastName,
 		user.Email,
 		user.Password,
-		time.Now(),
-		time.Now(),
+		user.CreatedAt,
+		user.UpdatedAt,
 	).Scan(&newID)
 
 	if err != nil {
