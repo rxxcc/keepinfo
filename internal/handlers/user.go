@@ -46,20 +46,19 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Email == "" {
-		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "email is required!"})
+	if err := utils.ValidateEmail(user.Email); err != nil {
+		response.Error(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	if user.FirstName == "" {
-		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "firstname is required!"})
+
+	names := []string{user.FirstName, user.LastName}
+	if err := utils.ValidateName(names...); err != nil {
+		response.Error(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	if user.LastName == "" {
-		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "lastname is required!"})
-		return
-	}
-	if len(user.Password) < 8 {
-		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "password is too short!"})
+
+	if err := utils.ValidatePassword(user.Password); err != nil {
+		response.Error(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -93,8 +92,13 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Email == "" || user.Password == "" {
-		response.JSON(w, http.StatusUnprocessableEntity, map[string]any{"message": "some fields are missing"})
+	if err := utils.ValidateEmail(user.Email); err != nil {
+		response.Error(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	if err := utils.ValidatePassword(user.Password); err != nil {
+		response.Error(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 

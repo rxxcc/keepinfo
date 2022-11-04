@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -27,6 +28,10 @@ func VerifyToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			authHeader := r.Header.Get("Authorization")
+			authTypeBearer := "Bearer"
+			keyfunc := func(token *jwt.Token) (interface{}, error) {
+				return []byte(os.Getenv("SECRET")), nil
+			}
 
 			if len(authHeader) == 0 {
 				response.Error(w, http.StatusUnauthorized, utils.ErrAuthHeader)
@@ -35,28 +40,33 @@ func VerifyToken(next http.Handler) http.Handler {
 
 			bearerToken := strings.Split(authHeader, " ")
 
-			keyfunc := func(token *jwt.Token) (interface{}, error) {
-				return []byte(os.Getenv("SECRET")), nil
+			if len(bearerToken) < 2 {
+				response.Error(w, http.StatusUnauthorized, utils.ErrInvalidAuthHeader)
+				return
 			}
 
-			if len(bearerToken) == 2 {
-				authToken := bearerToken[1]
+			authType := bearerToken[0]
+			if authType != authTypeBearer {
+				response.Error(w, http.StatusUnauthorized, fmt.Errorf("%w, %s", utils.ErrUnsupportedAuthType, authType))
+				return
+			}
 
-				token, err := jwt.Parse(authToken, keyfunc)
-				if err != nil {
-					verr, ok := err.(*jwt.ValidationError)
-					if ok && errors.Is(verr.Inner, utils.ErrExpiredToken) {
-						response.Error(w, http.StatusUnauthorized, utils.ErrExpiredToken)
-						return
-					}
-					response.Error(w, http.StatusUnauthorized, utils.ErrInvalidToken)
+			accessToken := bearerToken[1]
+
+			token, err := jwt.Parse(accessToken, keyfunc)
+			if err != nil {
+				verr, ok := err.(*jwt.ValidationError)
+				if ok && errors.Is(verr.Inner, utils.ErrExpiredToken) {
+					response.Error(w, http.StatusUnauthorized, utils.ErrExpiredToken)
 					return
 				}
+				response.Error(w, http.StatusUnauthorized, utils.ErrInvalidToken)
+				return
+			}
 
-				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-					response.JSON(w, http.StatusAccepted, claims)
-					next.ServeHTTP(w, r)
-				}
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				response.JSON(w, http.StatusAccepted, claims)
+				next.ServeHTTP(w, r)
 			}
 		})
 }

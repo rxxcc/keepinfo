@@ -20,9 +20,14 @@ func NEW() http.Handler {
 		r.Post("/signin", handlers.Repo.Login)
 	})
 
-	mux.Route("/api", func(r chi.Router) {
-		r.Post("/contacts", handlers.Repo.CreateContact)
-		r.Get("/contacts", handlers.Repo.GetContacts)
+	// contact url path
+	mux.Group(func(r chi.Router) {
+		r.Use(VerifyToken)
+
+		r.Route("/api", func(c chi.Router) {
+			c.Post("/contacts", handlers.Repo.CreateContact)
+			c.Get("/contacts", handlers.Repo.GetContacts)
+		})
 	})
 
 	return mux
