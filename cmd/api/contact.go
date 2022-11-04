@@ -54,9 +54,14 @@ func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Repository) GetContacts(w http.ResponseWriter, r *http.Request) {
-	// authPayload := r.Context().Value(authPayloadKey).(*auth.Claims)
+	// var cnt models.Contact
+	authPayload := r.Context().Value(authPayloadKey).(*auth.Claims)
 
-	result, err := h.DB.GetContacts()
+	args := models.GetAllUsers{
+		UserID: authPayload.ID.String(),
+	}
+
+	result, err := h.DB.GetContacts(args)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return

@@ -42,7 +42,7 @@ func (u *postgresDBRepo) InsertContact(contact *models.Contact) (string, error) 
 
 }
 
-func (u *postgresDBRepo) GetContacts() ([]models.Contact, error) {
+func (u *postgresDBRepo) GetContacts(args models.GetAllUsers) ([]models.Contact, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()
@@ -52,9 +52,11 @@ func (u *postgresDBRepo) GetContacts() ([]models.Contact, error) {
 
 	query := `
 	SELECT id, user_id, first_name, last_name, email, phone, label, address, created_at, updated_at
-	FROM contacts ORDER BY created_at`
+	FROM contacts 
+	WHERE user_id = $1 
+	ORDER BY first_name`
 
-	rows, err := u.DB.QueryContext(ctx, query)
+	rows, err := u.DB.QueryContext(ctx, query, args.UserID)
 	if err != nil {
 		return nil, err
 	}

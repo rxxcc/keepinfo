@@ -11,7 +11,7 @@ type DatabaseRepo interface {
 
 	// contact
 	InsertContact(contact *models.Contact) (string, error)
-	GetContacts() ([]models.Contact, error)
+	GetContacts(args models.GetAllUsers) ([]models.Contact, error)
 	GetContact(id string) (models.Contact, error)
 
 	// session

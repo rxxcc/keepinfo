@@ -52,4 +52,8 @@ type (
 		ExpiredAt    time.Time `json:"expired_at"`
 		CreatedAt    time.Time `json:"created_at"`
 	}
+
+	GetAllUsers struct {
+		UserID string `json:"user_id"`
+	}
 )

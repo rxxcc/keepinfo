@@ -23,9 +23,11 @@ func AddContentType(next http.Handler) http.Handler {
 		})
 }
 
-var (
+type authorizationPayloadKey string
+
+const (
 	authTypeBearer = "Bearer"
-	authPayloadKey = "AuthorizationPayload"
+	authPayloadKey = authorizationPayloadKey("AuthorizationPayload")
 )
 
 func VerifyToken(next http.Handler) http.Handler {
