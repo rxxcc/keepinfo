@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/inuoshios/keepinfo/internal/handlers"
 )
 
 func NEW() http.Handler {
@@ -16,8 +15,8 @@ func NEW() http.Handler {
 
 	// Paths
 	mux.Route("/auth", func(r chi.Router) {
-		r.Post("/signup", handlers.Repo.Signup)
-		r.Post("/signin", handlers.Repo.Login)
+		r.Post("/signup", Repo.Signup)
+		r.Post("/signin", Repo.Login)
 	})
 
 	// contact url path
@@ -25,8 +24,9 @@ func NEW() http.Handler {
 		r.Use(VerifyToken)
 
 		r.Route("/api", func(c chi.Router) {
-			c.Post("/contacts", handlers.Repo.CreateContact)
-			c.Get("/contacts", handlers.Repo.GetContacts)
+			c.Post("/contacts", Repo.CreateContact)
+			c.Get("/contacts", Repo.GetContacts)
+			c.Get("/contacts/{id}", Repo.GetContact)
 		})
 	})
 

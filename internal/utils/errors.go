@@ -9,4 +9,5 @@ var (
 	ErrSqlNoRows           = errors.New("user does not exist")
 	ErrInvalidAuthHeader   = errors.New("invalid authorization header format")
 	ErrUnsupportedAuthType = errors.New("unsupported authorization type")
+	ErrAuthUser            = errors.New("account does not belong to this user")
 )

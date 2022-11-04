@@ -8,10 +8,11 @@ import (
 
 	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
-	"github.com/inuoshios/keepinfo/internal/handlers"
 )
 
-var app config.Config
+var (
+	app config.Config
+)
 
 // Run starts a new server.
 func Run() (*database.DB, error) {
@@ -35,8 +36,8 @@ func Run() (*database.DB, error) {
 
 	app.InfoLog.Println("connected to the database successfully")
 
-	repo := handlers.NewRepository(&app, dbConn)
-	handlers.NewHandlers(repo)
+	repo := NewRepository(&app, dbConn)
+	NewHandlers(repo)
 
 	// starting up a server.
 	app.InfoLog.Println("starting a new server at port " + port)

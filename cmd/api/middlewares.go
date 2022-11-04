@@ -1,13 +1,12 @@
 package main
 
 import (
-	"errors"
+	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/inuoshios/keepinfo/internal/auth"
 	"github.com/inuoshios/keepinfo/internal/response"
 	"github.com/inuoshios/keepinfo/internal/utils"
 )
@@ -24,14 +23,15 @@ func AddContentType(next http.Handler) http.Handler {
 		})
 }
 
+var (
+	authTypeBearer = "Bearer"
+	authPayloadKey = "AuthorizationPayload"
+)
+
 func VerifyToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			authHeader := r.Header.Get("Authorization")
-			authTypeBearer := "Bearer"
-			keyfunc := func(token *jwt.Token) (interface{}, error) {
-				return []byte(os.Getenv("SECRET")), nil
-			}
 
 			if len(authHeader) == 0 {
 				response.Error(w, http.StatusUnauthorized, utils.ErrAuthHeader)
@@ -53,20 +53,13 @@ func VerifyToken(next http.Handler) http.Handler {
 
 			accessToken := bearerToken[1]
 
-			token, err := jwt.Parse(accessToken, keyfunc)
+			payload, err := auth.VerifyToken(accessToken)
 			if err != nil {
-				verr, ok := err.(*jwt.ValidationError)
-				if ok && errors.Is(verr.Inner, utils.ErrExpiredToken) {
-					response.Error(w, http.StatusUnauthorized, utils.ErrExpiredToken)
-					return
-				}
-				response.Error(w, http.StatusUnauthorized, utils.ErrInvalidToken)
+				response.Error(w, http.StatusUnauthorized, fmt.Errorf("-> %w", err))
 				return
 			}
 
-			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				response.JSON(w, http.StatusAccepted, claims)
-				next.ServeHTTP(w, r)
-			}
+			ctx := context.WithValue(r.Context(), authPayloadKey, payload)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 }

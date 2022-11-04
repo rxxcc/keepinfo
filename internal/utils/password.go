@@ -20,7 +20,7 @@ func ComparePassword(hashedPassword, password string) error {
 	if err != nil {
 		switch {
 		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword):
-			return nil
+			return err
 		default:
 			return err
 		}

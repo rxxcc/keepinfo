@@ -89,3 +89,31 @@ func (u *postgresDBRepo) GetContacts() ([]models.Contact, error) {
 
 	return contact, nil
 }
+
+func (u *postgresDBRepo) GetContact(id string) (models.Contact, error) {
+	var contact models.Contact
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	query := `
+	SELECT id, user_id, first_name, last_name, email, phone, label, address, created_at, updated_at
+	FROM contacts WHERE id = $1 LIMIT 1`
+
+	rows := u.DB.QueryRowContext(ctx, query, id)
+	err := rows.Scan(
+		&contact.ID,
+		&contact.UserID,
+		&contact.FirstName,
+		&contact.LastName,
+		&contact.Email,
+		&contact.Phone,
+		&contact.Label,
+		&contact.Address,
+		&contact.CreatedAt,
+		&contact.UpdatedAt,
+	)
+
+	return contact, err
+}

@@ -36,8 +36,9 @@ type (
 	}
 
 	JWT struct {
-		Token string `json:"token"`
-		User  User   `json:"user"`
+		Token     string    `json:"token"`
+		ExpiresAt time.Time `json:"expires_at"`
+		User      User      `json:"user"`
 	}
 
 	Session struct {

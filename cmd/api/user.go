@@ -1,4 +1,4 @@
-package handlers
+package main
 
 import (
 	"database/sql"
@@ -112,19 +112,20 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := utils.ComparePassword(result.Password, user.Password); err != nil {
+	if err = utils.ComparePassword(result.Password, user.Password); err != nil {
 		response.Error(w, http.StatusUnauthorized, fmt.Errorf("-> %w", err))
 		return
 	}
 
-	token, err := auth.GenerateToken(result)
+	token, payload, err := auth.GenerateToken(result.ID)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return
 	}
 
 	response.JSON(w, 200, models.JWT{
-		Token: token,
-		User:  result,
+		Token:     token,
+		ExpiresAt: payload.ExpiresAt.Time,
+		User:      result,
 	})
 }
