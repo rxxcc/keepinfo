@@ -1,4 +1,4 @@
-package dbrepo
+package postgres
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/inuoshios/keepinfo/internal/models"
 )
 
-func (u *postgresDBRepo) CreateSession(session *models.Session) (string, error) {
+func (u *postgres) CreateSession(session *models.Session) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()

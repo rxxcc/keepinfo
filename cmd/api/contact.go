@@ -19,7 +19,7 @@ func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&contact)
 	if err != nil {
-		response.Error(w, http.StatusInternalServerError, err)
+		response.Error(w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -77,7 +77,7 @@ func (h *Repository) GetContact(w http.ResponseWriter, r *http.Request) {
 	result, err := h.DB.GetContact(path)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			response.Error(w, http.StatusNotFound, utils.ErrSqlNoRows)
+			response.Error(w, http.StatusNotFound, utils.ErrContactSqlNoRows)
 			return
 		}
 		response.Error(w, http.StatusInternalServerError, err)
@@ -91,4 +91,80 @@ func (h *Repository) GetContact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, http.StatusOK, result)
+}
+
+func (h *Repository) UpdateContact(w http.ResponseWriter, r *http.Request) {
+	path := chi.URLParam(r, "id")
+	authPayload := r.Context().Value(authPayloadKey).(*auth.Claims)
+
+	result, err := h.DB.GetContact(path)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			response.Error(w, http.StatusNotFound, utils.ErrContactSqlNoRows)
+			return
+		}
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if result.UserID != authPayload.ID.String() {
+		response.Error(w, http.StatusUnauthorized, utils.ErrAuthUser)
+		return
+	}
+
+	updatedAt, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	err = json.NewDecoder(r.Body).Decode(&result)
+	if err != nil {
+		response.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	var newInput = models.Contact{
+		ID:        result.ID,
+		UserID:    authPayload.ID.String(),
+		FirstName: result.FirstName,
+		LastName:  result.LastName,
+		Email:     result.Email,
+		Phone:     result.Phone,
+		Label:     result.Label,
+		Address:   result.Address,
+		UpdatedAt: updatedAt,
+	}
+
+	err = h.DB.UpdateContact(&newInput)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, result)
+}
+
+func (h *Repository) DeleteContact(w http.ResponseWriter, r *http.Request) {
+	path := chi.URLParam(r, "id")
+	authPayload := r.Context().Value(authPayloadKey).(*auth.Claims)
+
+	result, err := h.DB.GetContact(path)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			response.Error(w, http.StatusNotFound, utils.ErrContactSqlNoRows)
+			return
+		}
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if result.UserID != authPayload.ID.String() {
+		response.Error(w, http.StatusUnauthorized, utils.ErrAuthUser)
+		return
+	}
+
+	err = h.DB.DeleteContact(result.ID.String(), result.UserID)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, map[string]any{"message": "contact deleted successfully!"})
 }

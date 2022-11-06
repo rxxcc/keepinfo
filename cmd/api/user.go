@@ -12,7 +12,7 @@ import (
 	"github.com/inuoshios/keepinfo/internal/database"
 	"github.com/inuoshios/keepinfo/internal/models"
 	"github.com/inuoshios/keepinfo/internal/repository"
-	"github.com/inuoshios/keepinfo/internal/repository/dbrepo"
+	"github.com/inuoshios/keepinfo/internal/repository/postgres"
 	"github.com/inuoshios/keepinfo/internal/response"
 	"github.com/inuoshios/keepinfo/internal/utils"
 )
@@ -28,7 +28,7 @@ type Repository struct {
 func NewRepository(a *config.Config, db *database.DB) *Repository {
 	return &Repository{
 		App: a,
-		DB:  dbrepo.NewPostgresRepo(a, db.SQL),
+		DB:  postgres.NewPostgresRepo(a, db.SQL),
 	}
 }
 

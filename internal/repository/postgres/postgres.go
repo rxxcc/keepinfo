@@ -1,4 +1,4 @@
-package dbrepo
+package postgres
 
 import (
 	"database/sql"
@@ -7,14 +7,14 @@ import (
 	"github.com/inuoshios/keepinfo/internal/repository"
 )
 
-type postgresDBRepo struct {
+type postgres struct {
 	App *config.Config
 	DB  *sql.DB
 }
 
 // NewPostgresRepo initializes the DatabaseRepo
 func NewPostgresRepo(a *config.Config, conn *sql.DB) repository.DatabaseRepo {
-	return &postgresDBRepo{
+	return &postgres{
 		App: a,
 		DB:  conn,
 	}

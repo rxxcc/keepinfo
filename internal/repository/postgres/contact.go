@@ -1,4 +1,4 @@
-package dbrepo
+package postgres
 
 import (
 	"context"
@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/inuoshios/keepinfo/internal/utils"
 )
 
-func (u *postgresDBRepo) InsertContact(contact *models.Contact) (string, error) {
+func (u *postgres) InsertContact(contact *models.Contact) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()
@@ -42,7 +43,7 @@ func (u *postgresDBRepo) InsertContact(contact *models.Contact) (string, error) 
 
 }
 
-func (u *postgresDBRepo) GetContacts(args models.GetAllUsers) ([]models.Contact, error) {
+func (u *postgres) GetContacts(args models.GetAllUsers) ([]models.Contact, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()
@@ -92,7 +93,7 @@ func (u *postgresDBRepo) GetContacts(args models.GetAllUsers) ([]models.Contact,
 	return contact, nil
 }
 
-func (u *postgresDBRepo) GetContact(id string) (models.Contact, error) {
+func (u *postgres) GetContact(id string) (models.Contact, error) {
 	var contact models.Contact
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
@@ -118,4 +119,61 @@ func (u *postgresDBRepo) GetContact(id string) (models.Contact, error) {
 	)
 
 	return contact, err
+}
+
+func (u *postgres) UpdateContact(contact *models.Contact) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	query := `
+	UPDATE contacts
+	SET first_name = $1, last_name = $2, email = $3, phone = $4, label = $5, address = $6,
+	updated_at = $7, user_id = $8
+	WHERE id = $9
+	RETURNING id
+	`
+	rows := u.DB.QueryRowContext(ctx, query,
+		contact.FirstName,
+		contact.LastName,
+		contact.Email,
+		contact.Phone,
+		contact.Label,
+		contact.Address,
+		contact.UpdatedAt,
+		contact.UserID,
+		contact.ID,
+	)
+	err := rows.Scan(&contact.ID)
+
+	return err
+}
+
+func (u *postgres) DeleteContact(id, userid string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	query := `
+	DELETE FROM contacts
+	WHERE id = $1 AND user_id = $2
+	`
+
+	rows, err := u.DB.ExecContext(ctx, query, id, userid)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := rows.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return utils.ErrContactSqlNoRows
+	}
+
+	return nil
 }

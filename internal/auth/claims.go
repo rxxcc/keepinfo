@@ -16,15 +16,9 @@ type Claims struct {
 var user models.User
 
 func NewClaims(id uuid.UUID) (*Claims, error) {
-	tokenID, err := uuid.NewRandom()
-	if err != nil {
-		return nil, err
-	}
-
 	claims := Claims{
 		ID: id,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ID:        tokenID.String(),
 			Issuer:    user.Email,
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 12)),

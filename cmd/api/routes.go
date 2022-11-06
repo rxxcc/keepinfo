@@ -13,7 +13,7 @@ func NEW() http.Handler {
 	// Adding the middlewares
 	mux.Use(AddContentType)
 
-	// Paths
+	// signup/signin paths
 	mux.Route("/auth", func(r chi.Router) {
 		r.Post("/signup", Repo.Signup)
 		r.Post("/signin", Repo.Login)
@@ -27,6 +27,8 @@ func NEW() http.Handler {
 			c.Post("/contacts", Repo.CreateContact)
 			c.Get("/contacts", Repo.GetContacts)
 			c.Get("/contacts/{id}", Repo.GetContact)
+			c.Patch("/contacts/{id}", Repo.UpdateContact)
+			c.Delete("/contacts/{id}", Repo.DeleteContact)
 		})
 	})
 

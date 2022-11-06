@@ -13,6 +13,8 @@ type DatabaseRepo interface {
 	InsertContact(contact *models.Contact) (string, error)
 	GetContacts(args models.GetAllUsers) ([]models.Contact, error)
 	GetContact(id string) (models.Contact, error)
+	UpdateContact(contact *models.Contact) error
+	DeleteContact(id, userid string) error
 
 	// session
 	CreateSession(session *models.Session) (string, error)

@@ -1,4 +1,4 @@
-package dbrepo
+package postgres
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 )
 
 // InsertUser inserts a user into the database
-func (u *postgresDBRepo) InsertUser(user *models.User) (string, error) {
+func (u *postgres) InsertUser(user *models.User) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
 		cancel()
@@ -39,7 +39,7 @@ func (u *postgresDBRepo) InsertUser(user *models.User) (string, error) {
 	return string(newID), nil
 }
 
-func (u *postgresDBRepo) GetUser(email string) (models.User, error) {
+func (u *postgres) GetUser(email string) (models.User, error) {
 	var user models.User
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
