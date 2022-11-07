@@ -36,7 +36,7 @@ func (u *postgres) InsertContact(contact *models.Contact) (string, error) {
 	).Scan(&newId)
 
 	if err != nil {
-		return "", fmt.Errorf("error inserting into table %w", err)
+		return "", fmt.Errorf("error inserting into contacts table %w", err)
 	}
 
 	return string(newId), nil

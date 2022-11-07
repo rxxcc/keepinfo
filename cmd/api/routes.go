@@ -17,6 +17,7 @@ func NEW() http.Handler {
 	mux.Route("/auth", func(r chi.Router) {
 		r.Post("/signup", Repo.Signup)
 		r.Post("/signin", Repo.Login)
+		r.Post("/tokens/renew_access", Repo.RenewAccessToken)
 	})
 
 	// contact url path

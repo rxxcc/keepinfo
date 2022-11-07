@@ -8,6 +8,7 @@ import (
 	"github.com/inuoshios/keepinfo/internal/models"
 )
 
+// payload
 type Claims struct {
 	ID uuid.UUID `json:"id"`
 	jwt.RegisteredClaims
@@ -15,14 +16,15 @@ type Claims struct {
 
 var user models.User
 
-func NewClaims(id uuid.UUID) (*Claims, error) {
+func NewClaims(id uuid.UUID, duration time.Duration) (*Claims, error) {
 	claims := Claims{
 		ID: id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    user.Email,
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 12)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
 		},
 	}
+
 	return &claims, nil
 }

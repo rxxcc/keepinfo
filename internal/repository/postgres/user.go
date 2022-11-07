@@ -33,7 +33,7 @@ func (u *postgres) InsertUser(user *models.User) (string, error) {
 	).Scan(&newID)
 
 	if err != nil {
-		return "", fmt.Errorf("error inserting into table %w", err)
+		return "", fmt.Errorf("error inserting into user table %w", err)
 	}
 
 	return string(newID), nil

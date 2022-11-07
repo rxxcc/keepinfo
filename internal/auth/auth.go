@@ -4,26 +4,27 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"github.com/inuoshios/keepinfo/internal/utils"
 )
 
-func GenerateToken(id uuid.UUID) (string, *Claims, error) {
-	claims, err := NewClaims(id)
+func GenerateToken(id uuid.UUID, duration time.Duration) (string, *Claims, error) {
+	payload, err := NewClaims(id, duration)
 	if err != nil {
-		return "", claims, fmt.Errorf("payload: %w", err)
+		return "", payload, fmt.Errorf("payload: %w", err)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 
 	signedStr, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
-		return "", claims, fmt.Errorf("error creating signed string: %w", err)
+		return "", payload, fmt.Errorf("error creating signed string: %w", err)
 	}
 
-	return signedStr, claims, nil
+	return signedStr, payload, nil
 }
 
 // VerifyToken checks if the token is valid or not

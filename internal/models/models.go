@@ -36,15 +36,17 @@ type (
 	}
 
 	JWT struct {
-		Token     string    `json:"token"`
-		ExpiresAt time.Time `json:"expires_at"`
-		User      User      `json:"user"`
+		SessionID             uuid.UUID `json:"session_id"`
+		AccessToken           string    `json:"access_token"`
+		RefreshToken          string    `json:"refresh_token"`
+		RefreshTokenExpiresAt time.Time `json:"refresh_token_expires_at"`
+		AccessTokenExpiresAt  time.Time `json:"access_token_expires_at"`
+		User                  User      `json:"user"`
 	}
 
 	Session struct {
 		ID           uuid.UUID `json:"id"`
 		UserID       string    `json:"user_id"`
-		Email        string    `json:"email"`
 		RefreshToken string    `json:"refresh_token"`
 		UserAgent    string    `json:"user_agent"`
 		ClientIP     string    `json:"client_ip"`
@@ -55,5 +57,14 @@ type (
 
 	GetAllUsers struct {
 		UserID string `json:"user_id"`
+	}
+
+	RenewAccessTokenRequest struct {
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	RenewAccessTokenResponse struct {
+		AccessToken          string    `json:"access_token"`
+		AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
 	}
 )

@@ -117,15 +117,39 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, payload, err := auth.GenerateToken(result.ID)
+	acessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*12))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return
 	}
 
+	refreshToken, refreshPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*24))
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
+		return
+	}
+
+	session, err := h.DB.CreateSession(&models.Session{
+		ID:           refreshPayload.ID,
+		UserID:       result.ID.String(),
+		RefreshToken: refreshToken,
+		UserAgent:    r.UserAgent(),
+		ClientIP:     r.RemoteAddr,
+		IsBlocked:    false,
+		ExpiredAt:    refreshPayload.ExpiresAt.Time,
+	})
+
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
 	response.JSON(w, 200, models.JWT{
-		Token:     token,
-		ExpiresAt: payload.ExpiresAt.Time,
-		User:      result,
+		SessionID:             session.ID,
+		AccessToken:           acessToken,
+		RefreshToken:          refreshToken,
+		AccessTokenExpiresAt:  accessPayload.ExpiresAt.Time,
+		RefreshTokenExpiresAt: refreshPayload.ExpiresAt.Time,
+		User:                  result,
 	})
 }

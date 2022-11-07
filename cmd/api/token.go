@@ -1,0 +1,71 @@
+package main
+
+import (
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/inuoshios/keepinfo/internal/auth"
+	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/inuoshios/keepinfo/internal/response"
+	"github.com/inuoshios/keepinfo/internal/utils"
+)
+
+func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
+	var session models.RenewAccessTokenRequest
+
+	err := json.NewDecoder(r.Body).Decode(&session)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	refreshPayload, err := auth.VerifyToken(session.RefreshToken)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	result, err := h.DB.GetSession(refreshPayload.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			response.Error(w, http.StatusNotFound, utils.ErrSqlNoRows)
+			return
+		}
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if result.IsBlocked {
+		response.Error(w, http.StatusUnauthorized, utils.ErrBlockedSession)
+		return
+	}
+
+	if result.UserID != refreshPayload.ID.String() {
+		response.Error(w, http.StatusUnauthorized, utils.ErrIncorrectSessionUser)
+		return
+	}
+
+	if result.RefreshToken != session.RefreshToken {
+		response.Error(w, http.StatusUnauthorized, utils.ErrMismatchedToken)
+		return
+	}
+
+	if time.Now().After(result.ExpiredAt) {
+		response.Error(w, http.StatusUnauthorized, utils.ErrExpiredSession)
+		return
+	}
+
+	acessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*12))
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
+		return
+	}
+
+	response.JSON(w, http.StatusOK, models.RenewAccessTokenResponse{
+		AccessToken:          acessToken,
+		AccessTokenExpiresAt: accessPayload.ExpiresAt.Time,
+	})
+}
