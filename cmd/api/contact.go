@@ -49,7 +49,8 @@ func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, 200, map[string]string{
-		"id": result,
+		"status": "success",
+		"id":     result,
 	})
 }
 

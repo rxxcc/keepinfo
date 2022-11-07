@@ -79,7 +79,8 @@ func (h *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, 200, map[string]string{
-		"id": result,
+		"status": "success",
+		"id":     result,
 	})
 }
 
@@ -117,7 +118,7 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	acessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*12))
+	accessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*12))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return
@@ -146,7 +147,7 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, 200, models.JWT{
 		SessionID:             session.ID,
-		AccessToken:           acessToken,
+		AccessToken:           accessToken,
 		RefreshToken:          refreshToken,
 		AccessTokenExpiresAt:  accessPayload.ExpiresAt.Time,
 		RefreshTokenExpiresAt: refreshPayload.ExpiresAt.Time,

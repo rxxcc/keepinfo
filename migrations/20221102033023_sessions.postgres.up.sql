@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE sessions (
-    id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id uuid DEFAULT uuid_generate_v4(),
     user_id uuid,
     refresh_token VARCHAR NOT NULL,
     user_agent VARCHAR NOT NULL,
@@ -11,7 +11,9 @@ CREATE TABLE sessions (
     created_at timestamp NOT NULL DEFAULT (now())
 );
 
-ALTER TABLE sessions  
-    ADD FOREIGN KEY(user_id)
+ALTER TABLE sessions 
+    ADD CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
             REFERENCES users(id)
                 ON DELETE CASCADE
+

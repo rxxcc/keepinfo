@@ -14,21 +14,21 @@ import (
 )
 
 func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
-	var session models.RenewAccessTokenRequest
+	var req models.RenewAccessTokenRequest
 
-	err := json.NewDecoder(r.Body).Decode(&session)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	refreshPayload, err := auth.VerifyToken(session.RefreshToken)
+	refreshPayload, err := auth.VerifyToken(req.RefreshToken)
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	result, err := h.DB.GetSession(refreshPayload.ID)
+	session, err := h.DB.GetSession(refreshPayload.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			response.Error(w, http.StatusNotFound, utils.ErrSqlNoRows)
@@ -38,27 +38,27 @@ func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result.IsBlocked {
+	if session.IsBlocked {
 		response.Error(w, http.StatusUnauthorized, utils.ErrBlockedSession)
 		return
 	}
 
-	if result.UserID != refreshPayload.ID.String() {
+	if session.UserID != refreshPayload.ID.String() {
 		response.Error(w, http.StatusUnauthorized, utils.ErrIncorrectSessionUser)
 		return
 	}
 
-	if result.RefreshToken != session.RefreshToken {
+	if session.RefreshToken != req.RefreshToken {
 		response.Error(w, http.StatusUnauthorized, utils.ErrMismatchedToken)
 		return
 	}
 
-	if time.Now().After(result.ExpiredAt) {
+	if time.Now().After(session.ExpiredAt) {
 		response.Error(w, http.StatusUnauthorized, utils.ErrExpiredSession)
 		return
 	}
 
-	acessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*12))
+	acessToken, accessPayload, err := auth.GenerateToken(session.ID, time.Duration(time.Hour*12))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return
