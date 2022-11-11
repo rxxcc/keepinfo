@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/inuoshios/keepinfo/internal/auth"
 	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
@@ -118,20 +119,22 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*12))
+	accessToken, accessPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Minute*1))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return
 	}
 
-	refreshToken, refreshPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Hour*24))
+	refreshToken, refreshPayload, err := auth.GenerateToken(result.ID, time.Duration(time.Minute*4))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return
 	}
+
+	randomID, _ := uuid.NewRandom()
 
 	session, err := h.DB.CreateSession(&models.Session{
-		ID:           refreshPayload.ID,
+		ID:           randomID,
 		UserID:       result.ID.String(),
 		RefreshToken: refreshToken,
 		UserAgent:    r.UserAgent(),

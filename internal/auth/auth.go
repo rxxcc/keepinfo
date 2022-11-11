@@ -32,7 +32,7 @@ func VerifyToken(token string) (*Claims, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
-			return nil, utils.ErrInvalidToken
+			return &Claims{}, utils.ErrInvalidToken
 		}
 		return []byte(os.Getenv("SECRET")), nil
 	}
@@ -41,13 +41,13 @@ func VerifyToken(token string) (*Claims, error) {
 	if err != nil {
 		verr, ok := err.(*jwt.ValidationError)
 		if ok && errors.Is(verr.Inner, utils.ErrExpiredToken) {
-			return nil, utils.ErrExpiredToken
+			return &Claims{}, utils.ErrExpiredToken
 		}
 	}
 
 	payload, ok := jwtToken.Claims.(*Claims)
 	if !ok {
-		return nil, utils.ErrInvalidToken
+		return &Claims{}, utils.ErrInvalidToken
 	}
 
 	return payload, nil

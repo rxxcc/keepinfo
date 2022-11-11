@@ -58,7 +58,7 @@ func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	acessToken, accessPayload, err := auth.GenerateToken(session.ID, time.Duration(time.Hour*12))
+	acessToken, accessPayload, err := auth.GenerateToken(session.ID, time.Duration(time.Minute*4))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return

@@ -1,10 +1,15 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/inuoshios/keepinfo/internal/config"
 	"github.com/inuoshios/keepinfo/internal/database"
@@ -40,11 +45,44 @@ func Run() (*database.DB, error) {
 	NewHandlers(repo)
 
 	// starting up a server.
-	app.InfoLog.Println("starting a new server at port " + port)
-	r := NEW()
 
-	if err := http.ListenAndServe(":"+port, r); err != nil {
-		app.ErrorLog.Fatalf("server error - %v", err)
+	// if err := http.ListenAndServe(":"+port, r); err != nil {
+	// 	app.ErrorLog.Fatalf("server error - %v", err)
+	// 	return nil, err
+	// }
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: NEW(),
+	}
+
+	shutDownErr := make(chan error)
+
+	go func() {
+		quit := make(chan os.Signal, 1)
+
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+		s := <-quit
+
+		app.InfoLog.Printf("service interrupt received %s", s.String())
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer func() {
+			cancel()
+		}()
+
+		shutDownErr <- srv.Shutdown(ctx)
+
+	}()
+
+	app.InfoLog.Println("starting a new server at port " + port)
+
+	err = srv.ListenAndServe()
+	if !errors.Is(err, http.ErrServerClosed) {
+		return nil, fmt.Errorf("http server shutdown error %w", err)
+	}
+
+	if err = <-shutDownErr; err != nil {
 		return nil, err
 	}
 

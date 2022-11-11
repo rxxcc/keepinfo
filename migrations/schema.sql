@@ -71,7 +71,7 @@ ALTER TABLE public.schema_migration OWNER TO postgres;
 --
 
 CREATE TABLE public.sessions (
-    id uuid DEFAULT public.uuid_generate_v4(),
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     user_id uuid,
     refresh_token character varying NOT NULL,
     user_agent character varying NOT NULL,
@@ -108,6 +108,14 @@ ALTER TABLE public.users OWNER TO postgres;
 
 ALTER TABLE ONLY public.contacts
     ADD CONSTRAINT contacts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
