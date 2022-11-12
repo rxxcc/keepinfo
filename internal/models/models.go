@@ -36,7 +36,7 @@ type (
 	}
 
 	JWT struct {
-		SessionID             uuid.UUID `json:"session_id"`
+		SessionID             string    `json:"session_id"`
 		AccessToken           string    `json:"access_token"`
 		RefreshToken          string    `json:"refresh_token"`
 		RefreshTokenExpiresAt time.Time `json:"refresh_token_expires_at"`
@@ -45,7 +45,7 @@ type (
 	}
 
 	Session struct {
-		ID           uuid.UUID `json:"id"`
+		ID           string    `json:"id"`
 		UserID       string    `json:"user_id"`
 		RefreshToken string    `json:"refresh_token"`
 		UserAgent    string    `json:"user_agent"`

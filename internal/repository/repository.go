@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/google/uuid"
 	"github.com/inuoshios/keepinfo/internal/models"
 )
 
@@ -20,5 +19,5 @@ type DatabaseRepo interface {
 
 	// session
 	CreateSession(session *models.Session) (models.Session, error)
-	GetSession(id uuid.UUID) (models.Session, error)
+	GetSession(id string) (models.Session, error)
 }

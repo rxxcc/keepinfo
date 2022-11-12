@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
-
 	"github.com/inuoshios/keepinfo/internal/models"
 )
 
@@ -48,7 +46,7 @@ func (u *postgres) CreateSession(session *models.Session) (models.Session, error
 	return newSession, nil
 }
 
-func (u *postgres) GetSession(id uuid.UUID) (models.Session, error) {
+func (u *postgres) GetSession(id string) (models.Session, error) {
 	var session models.Session
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer func() {
