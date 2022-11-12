@@ -10,15 +10,18 @@ import (
 
 // payload
 type Claims struct {
-	ID uuid.UUID `json:"id"`
+	ID       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
 	jwt.RegisteredClaims
 }
 
 var user models.User
 
-func NewClaims(id uuid.UUID, duration time.Duration) (*Claims, error) {
+func NewClaims(username string, duration time.Duration) (*Claims, error) {
+	randomID, _ := uuid.NewRandom()
 	claims := Claims{
-		ID: id,
+		ID:       randomID,
+		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    user.Email,
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

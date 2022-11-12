@@ -29,6 +29,7 @@ func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session, err := h.DB.GetSession(refreshPayload.ID)
+	fmt.Println(refreshPayload.ID.String())
 	if err != nil {
 		if err == sql.ErrNoRows {
 			response.Error(w, http.StatusNotFound, utils.ErrSqlNoRows)
@@ -43,7 +44,7 @@ func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if session.UserID != refreshPayload.ID.String() {
+	if session.UserID != refreshPayload.Username {
 		response.Error(w, http.StatusUnauthorized, utils.ErrIncorrectSessionUser)
 		return
 	}
@@ -58,7 +59,7 @@ func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	acessToken, accessPayload, err := auth.GenerateToken(session.ID, time.Duration(time.Minute*4))
+	acessToken, accessPayload, err := auth.GenerateToken(refreshPayload.Username, time.Duration(time.Minute*4))
 	if err != nil {
 		response.Error(w, http.StatusInternalServerError, fmt.Errorf("-> %w", err))
 		return

@@ -9,6 +9,7 @@ type DatabaseRepo interface {
 	// user
 	InsertUser(user *models.User) (string, error)
 	GetUser(email string) (models.User, error)
+	GetUserByUsername(username string) (models.User, error)
 
 	// contact
 	InsertContact(contact *models.Contact) (string, error)

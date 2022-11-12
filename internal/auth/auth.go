@@ -7,12 +7,11 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
 	"github.com/inuoshios/keepinfo/internal/utils"
 )
 
-func GenerateToken(id uuid.UUID, duration time.Duration) (string, *Claims, error) {
-	payload, err := NewClaims(id, duration)
+func GenerateToken(username string, duration time.Duration) (string, *Claims, error) {
+	payload, err := NewClaims(username, duration)
 	if err != nil {
 		return "", payload, fmt.Errorf("payload: %w", err)
 	}

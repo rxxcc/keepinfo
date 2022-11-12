@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE contacts (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-  user_id uuid,
+  user_id VARCHAR NOT NULL,
   first_name VARCHAR NOT NULL,
   last_name VARCHAR NOT NULL,
   email VARCHAR NOT NULL,
@@ -17,5 +17,5 @@ CREATE TABLE contacts (
 ALTER TABLE contacts  
     ADD CONSTRAINT fk_user
         FOREIGN KEY(user_id)
-            REFERENCES users(id)
+            REFERENCES users(username)
                 ON DELETE CASCADE

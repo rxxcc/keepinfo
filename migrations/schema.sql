@@ -40,7 +40,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.contacts (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    user_id uuid,
+    user_id character varying NOT NULL,
     first_name character varying NOT NULL,
     last_name character varying NOT NULL,
     email character varying NOT NULL,
@@ -72,7 +72,7 @@ ALTER TABLE public.schema_migration OWNER TO postgres;
 
 CREATE TABLE public.sessions (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    user_id uuid,
+    user_id character varying NOT NULL,
     refresh_token character varying NOT NULL,
     user_agent character varying NOT NULL,
     client_ip character varying NOT NULL,
@@ -89,7 +89,7 @@ ALTER TABLE public.sessions OWNER TO postgres;
 --
 
 CREATE TABLE public.users (
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    username character varying NOT NULL,
     first_name character varying NOT NULL,
     last_name character varying NOT NULL,
     email character varying NOT NULL,
@@ -131,7 +131,7 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT users_pkey PRIMARY KEY (username);
 
 
 --
@@ -153,7 +153,7 @@ CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USIN
 --
 
 ALTER TABLE ONLY public.contacts
-    ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(username) ON DELETE CASCADE;
 
 
 --
@@ -161,7 +161,7 @@ ALTER TABLE ONLY public.contacts
 --
 
 ALTER TABLE ONLY public.sessions
-    ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(username) ON DELETE CASCADE;
 
 
 --
