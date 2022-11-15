@@ -3,8 +3,8 @@ package postgres
 import (
 	"database/sql"
 
-	"github.com/inuoshios/keepinfo/internal/config"
-	"github.com/inuoshios/keepinfo/internal/repository"
+	"github.com/ixxiv/keepinfo/internal/config"
+	"github.com/ixxiv/keepinfo/internal/repository"
 )
 
 type postgres struct {

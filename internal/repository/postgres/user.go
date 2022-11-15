@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/ixxiv/keepinfo/internal/models"
 )
 
 // InsertUser inserts a user into the database

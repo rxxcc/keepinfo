@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/ixxiv/keepinfo/internal/models"
 )
 
 type DatabaseRepo interface {

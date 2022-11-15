@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/inuoshios/keepinfo/internal/auth"
-	"github.com/inuoshios/keepinfo/internal/response"
-	"github.com/inuoshios/keepinfo/internal/utils"
+	"github.com/ixxiv/keepinfo/internal/auth"
+	"github.com/ixxiv/keepinfo/internal/response"
+	"github.com/ixxiv/keepinfo/internal/utils"
 )
 
 // AddContentType functions helps set headers for our api.

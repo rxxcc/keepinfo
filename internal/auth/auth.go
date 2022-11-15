@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/inuoshios/keepinfo/internal/utils"
+	"github.com/ixxiv/keepinfo/internal/utils"
 )
 
 func GenerateToken(username string, duration time.Duration) (string, *Claims, error) {

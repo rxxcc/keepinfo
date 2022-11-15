@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/inuoshios/keepinfo/internal/database"
+	"github.com/ixxiv/keepinfo/internal/database"
 	"github.com/joho/godotenv"
 )
 

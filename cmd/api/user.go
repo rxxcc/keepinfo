@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/inuoshios/keepinfo/internal/auth"
-	"github.com/inuoshios/keepinfo/internal/config"
-	"github.com/inuoshios/keepinfo/internal/database"
-	"github.com/inuoshios/keepinfo/internal/models"
-	"github.com/inuoshios/keepinfo/internal/repository"
-	"github.com/inuoshios/keepinfo/internal/repository/postgres"
-	"github.com/inuoshios/keepinfo/internal/response"
-	"github.com/inuoshios/keepinfo/internal/utils"
+	"github.com/ixxiv/keepinfo/internal/auth"
+	"github.com/ixxiv/keepinfo/internal/config"
+	"github.com/ixxiv/keepinfo/internal/database"
+	"github.com/ixxiv/keepinfo/internal/models"
+	"github.com/ixxiv/keepinfo/internal/repository"
+	"github.com/ixxiv/keepinfo/internal/repository/postgres"
+	"github.com/ixxiv/keepinfo/internal/response"
+	"github.com/ixxiv/keepinfo/internal/utils"
 )
 
 var Repo *Repository

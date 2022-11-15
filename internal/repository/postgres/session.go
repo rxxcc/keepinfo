@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/inuoshios/keepinfo/internal/models"
+	"github.com/ixxiv/keepinfo/internal/models"
 )
 
 func (u *postgres) CreateSession(session *models.Session) (models.Session, error) {

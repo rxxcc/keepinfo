@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/inuoshios/keepinfo/internal/auth"
-	"github.com/inuoshios/keepinfo/internal/models"
-	"github.com/inuoshios/keepinfo/internal/response"
-	"github.com/inuoshios/keepinfo/internal/utils"
+	"github.com/ixxiv/keepinfo/internal/auth"
+	"github.com/ixxiv/keepinfo/internal/models"
+	"github.com/ixxiv/keepinfo/internal/response"
+	"github.com/ixxiv/keepinfo/internal/utils"
 )
 
 func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {

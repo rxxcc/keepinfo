@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/inuoshios/keepinfo/internal/models"
-	"github.com/inuoshios/keepinfo/internal/utils"
+	"github.com/ixxiv/keepinfo/internal/models"
+	"github.com/ixxiv/keepinfo/internal/utils"
 )
 
 func (u *postgres) InsertContact(contact *models.Contact) (string, error) {

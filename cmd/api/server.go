@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/inuoshios/keepinfo/internal/config"
-	"github.com/inuoshios/keepinfo/internal/database"
+	"github.com/ixxiv/keepinfo/internal/config"
+	"github.com/ixxiv/keepinfo/internal/database"
 )
 
 var (
