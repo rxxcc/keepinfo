@@ -154,3 +154,9 @@ func (h *Repository) Login(w http.ResponseWriter, r *http.Request) {
 		User:                  result,
 	})
 }
+
+func (h *Repository) Logout(w http.ResponseWriter, r *http.Request) {
+	response.JSON(w, 200, map[string]string{
+		"message": "logout successful",
+	})
+}
