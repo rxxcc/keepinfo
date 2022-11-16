@@ -57,7 +57,7 @@ func VerifyToken(next http.Handler) http.Handler {
 
 			payload, err := auth.VerifyToken(accessToken)
 			if err != nil {
-				response.Error(w, http.StatusUnauthorized, fmt.Errorf("-> %w", err))
+				response.Error(w, http.StatusUnauthorized, fmt.Errorf("%w", err))
 				return
 			}
 

@@ -30,7 +30,7 @@ func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {
 
 	var args = models.Contact{
 		ID:        contact.ID,
-		UserID:    authPayload.Subject,
+		UserID:    authPayload.Username,
 		FirstName: contact.FirstName,
 		LastName:  contact.LastName,
 		Email:     contact.Email,
@@ -55,11 +55,10 @@ func (h *Repository) CreateContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Repository) GetContacts(w http.ResponseWriter, r *http.Request) {
-	// var cnt models.Contact
 	authPayload := r.Context().Value(authPayloadKey).(*auth.Claims)
 
 	args := models.GetAllUsers{
-		UserID: authPayload.Subject,
+		UserID: authPayload.Username,
 	}
 
 	result, err := h.DB.GetContacts(args)
@@ -86,7 +85,7 @@ func (h *Repository) GetContact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	authPayload := r.Context().Value(authPayloadKey).(*auth.Claims)
-	if result.UserID != authPayload.Subject {
+	if result.UserID != authPayload.Username {
 		response.Error(w, http.StatusUnauthorized, utils.ErrAuthUser)
 		return
 	}
@@ -108,7 +107,7 @@ func (h *Repository) UpdateContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result.UserID != authPayload.Subject {
+	if result.UserID != authPayload.Username {
 		response.Error(w, http.StatusUnauthorized, utils.ErrAuthUser)
 		return
 	}
@@ -156,7 +155,7 @@ func (h *Repository) DeleteContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result.UserID != authPayload.Subject {
+	if result.UserID != authPayload.Username {
 		response.Error(w, http.StatusUnauthorized, utils.ErrAuthUser)
 		return
 	}

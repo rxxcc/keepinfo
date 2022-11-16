@@ -29,7 +29,6 @@ func (h *Repository) RenewAccessToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session, err := h.DB.GetSession(refreshPayload.ID)
-	fmt.Println(refreshPayload.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			response.Error(w, http.StatusNotFound, utils.ErrSqlNoRows)
